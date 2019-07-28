@@ -1,8 +1,33 @@
 import Vue from 'vue'
-import App from './App.vue'
+import VueRouter from 'vue-router'
+import BootstrapVue from 'bootstrap-vue'
 
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+import App from './App.vue'
+import vuetify from './plugins/vuetify';
+import VueGlobalVariable from 'vue-global-var';
+
+import routes from './routes'
+
+Vue.use(VueRouter)
+Vue.use(BootstrapVue)
+Vue.use(VueGlobalVariable, {
+  globals: {
+    $apiUrl: "http://localhost:8081"
+  }
+})
 Vue.config.productionTip = false
 
+const router = new VueRouter({
+  routes,
+  mode: 'history'
+})
+
 new Vue({
-  render: h => h(App),
+  vuetify,
+  router,
+  render: h => h(App)
 }).$mount('#app')
+
