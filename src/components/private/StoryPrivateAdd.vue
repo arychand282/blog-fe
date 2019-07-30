@@ -27,13 +27,15 @@
                       v-model="story.summary"
                       hint="Hint text"
                     ></v-textarea>
-
+<!-- 
                     <v-textarea
                       name="input-7-1"
                       label="Content"
                       v-model="story.content"
                       hint="Hint text"
-                    ></v-textarea>
+                    ></v-textarea> -->
+
+                    <ckeditor :editor="editor" v-model="story.content" tag-name="textarea" :config="editorConfig"></ckeditor>
                   </v-form>
               </v-layout>
 
@@ -93,7 +95,7 @@
                   <v-btn
                     class="white--text"
                     color="blue"
-                    @click="overlay = false; redirectTo('/storiesPrivate')"
+                    @click="overlay = false; redirectTo('/storiesPrivate/detail/' + id)"
                   >
                     Story Created
                   </v-btn>
@@ -115,12 +117,13 @@
 
     import BarPrivate from '../private/BarPrivate'
     import NavigationPrivate from '../private/NavigationPrivate'
+    import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
     export default {
         name: 'StoryPrivateAdd',
         components: {
           BarPrivate,
-          NavigationPrivate
+          NavigationPrivate,
         },
         methods: {
           saveStory: function() {
@@ -136,6 +139,7 @@
                 createdBy: "chanchan",
               })
               .then(response => {
+                this.id = response.data.id;
                 this.overlay = response.data.id !== null
               })
               .catch(e => {
@@ -156,7 +160,12 @@
             },
             saveDialog: false,
             overlay: false,
-            zIndex: 0
+            zIndex: 0,
+            editor: ClassicEditor,
+            editorData: '<p>Content of the editor.</p>',
+            editorConfig: {
+                // The configuration of the editor.
+            }     
           }
         },
         mounted() {

@@ -83,7 +83,7 @@
                       </v-btn>
                     </v-flex>
                     <v-flex xs2 md2>
-                      <v-btn text icon color="green">
+                      <v-btn text icon color="green" @click="redirectTo('/storiesPrivate/update/' + id)">
                         <v-icon>mdi-file-document-edit</v-icon> Edit
                       </v-btn>
                     </v-flex>

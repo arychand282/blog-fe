@@ -8,6 +8,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import VueGlobalVariable from 'vue-global-var';
+import CKEditor from '@ckeditor/ckeditor5-vue'
 
 import routes from './routes'
 
@@ -18,6 +19,7 @@ Vue.use(VueGlobalVariable, {
     $apiUrl: "http://localhost:8081"
   }
 })
+Vue.use( CKEditor )
 Vue.config.productionTip = false
 
 const router = new VueRouter({

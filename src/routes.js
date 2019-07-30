@@ -3,6 +3,7 @@ import StoriesPrivate from './components/private/StoriesPrivate'
 import HelloWorld from './components/HelloWorld'
 import StoryPrivateDetail from './components/private/StoryPrivateDetail'
 import StoryPrivateAdd from './components/private/StoryPrivateAdd'
+import StoryPrivateUpdate from './components/private/StoryPrivateUpdate'
 
 export default [
   { 
@@ -36,5 +37,13 @@ export default [
     icon: null, 
     isBackOffice: true, 
     component: StoryPrivateAdd
+  },
+  { 
+    id: 4, 
+    path: '/storiesPrivate/update/:id', 
+    title: null, 
+    icon: null, 
+    isBackOffice: true, 
+    component: StoryPrivateUpdate
   }
 ]
