@@ -33,11 +33,56 @@
               </v-layout>
               <v-divider></v-divider>
               <v-layout wrap>
-                <v-flex xs3>
+                <v-flex xs3 sm3>
                   <p><b>Content</b></p>
                 </v-flex>
-                <v-flex xs9>
+                <v-flex xs9 sm9>
                   <p v-html="escapedContent"></p>
+                </v-flex>
+              </v-layout>
+
+              <v-divider v-if="images.length > 0"></v-divider>
+
+              <v-layout v-if="images.length > 0">
+                <v-flex xs3 sm3>
+                  <p><b>Images</b></p>
+                </v-flex>
+                <v-flex xs6 sm6>
+                  <v-card>
+                    <v-container grid-list-sm fluid>
+                      <v-layout wrap>
+                        <v-flex
+                          v-for="image in images"
+                          :key="image.id"
+                          xs4
+                          d-flex
+                          child-flex
+                        >
+                          <v-card flat tile class="d-flex">
+                            <v-img
+                              :src="image.fileDownloadUri"
+                              :lazy-src="image.fileDownloadUri"
+                              aspect-ratio="1"
+                              class="grey lighten-2"
+                              style="cursor: pointer;"
+                              @click.stop="imageModal = true; showDetailImage(image)"
+                            >
+                              <template v-slot:placeholder>
+                                <v-layout
+                                  fill-height
+                                  align-center
+                                  justify-center
+                                  ma-0
+                                >
+                                  <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                </v-layout>
+                              </template>
+                            </v-img>
+                          </v-card>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-card>
                 </v-flex>
               </v-layout>
 
@@ -127,6 +172,43 @@
                 </v-card>
               </v-dialog>
 
+              <v-layout justify-center>
+                <v-dialog
+                  v-model="imageModal"
+                  max-width="500"
+                  max-height="500"
+                >
+                  <v-card>
+                    <v-card-title class="headline">Image Detail</v-card-title>
+
+                    <v-card-text>
+                      <v-layout align-center justify-center>
+                        <v-img
+                          :src="detailImage.fileDownloadUri"
+                          :lazy-src="detailImage.fileDownloadUri"
+                          aspect-ratio="1"
+                          class="grey lighten-2"
+                          max-width="500"
+                          max-height="300"
+                        ></v-img>
+                      </v-layout>
+                    </v-card-text>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer> 
+
+                      <v-btn
+                        color="green darken-1"
+                        text
+                        @click="imageModal = false"
+                      >
+                        Close
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-layout>
+
               <v-layout justify-center wrap>
                 <v-overlay
                   :z-index="zIndex"
@@ -174,6 +256,7 @@
                   this.id = this.detailStory.id
                   this.escapedSummary = this.detailStory.summary.replace(/(\r\n|\n|\r)/gm, "<br/>")
                   this.escapedContent = this.detailStory.content.replace(/(\r\n|\n|\r)/gm, "<br/>")
+                  this.images = this.detailStory.uploadFileResponseDtoList
                 })
                 .catch(e => {
                   this.errors.push(e)
@@ -191,6 +274,9 @@
             },
             redirectTo: function(url) {
               this.$router.push(url)
+            },
+            showDetailImage: function(image) {
+              this.detailImage = image;
             }
         },
         data() {
@@ -198,10 +284,13 @@
             id: null,
             detailStory: {},
             deleteDialog: false,
+            imageModal: false,
             overlay: false,
             zIndex: 0,
             escapedSummary: '',
-            escapedContent: ''
+            escapedContent: '',
+            images: [],
+            detailImage: {}
           }
         },
         mounted() {

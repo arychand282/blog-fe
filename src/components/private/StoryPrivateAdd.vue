@@ -27,15 +27,14 @@
                       v-model="story.summary"
                       hint="Hint text"
                     ></v-textarea>
-<!-- 
-                    <v-textarea
-                      name="input-7-1"
-                      label="Content"
-                      v-model="story.content"
-                      hint="Hint text"
-                    ></v-textarea> -->
 
-                    <ckeditor :editor="editor" v-model="story.content" tag-name="textarea" :config="editorConfig"></ckeditor>
+                    <p>Content</p>
+                    <div style="margin-top: -13px; padding-bottom: 10px">
+                      <ckeditor :editor="editor" v-model="story.content" tag-name="textarea" :config="editorConfig"></ckeditor>
+                    </div>
+
+                    <v-file-input type="file" label="Images" v-model="images" multiple></v-file-input>
+
                   </v-form>
               </v-layout>
 
@@ -141,6 +140,7 @@
               .then(response => {
                 this.id = response.data.id;
                 this.overlay = response.data.id !== null
+                this.uploadImages(this.id)
               })
               .catch(e => {
                 this.errors.push(e)
@@ -148,6 +148,22 @@
           },
           redirectTo: function(url) {
             this.$router.push(url)
+          },
+          uploadImages: function(storyId) {
+            var formData = new FormData()
+            formData.append("storyId", storyId)
+            this.images.forEach((image) => {
+              formData.append("files", image)
+            })
+
+            axios
+              .post(this.$apiUrl + `/api/v1/file/upload_multiple_files`, formData)
+              .then(response => {
+                response.data
+              })
+              .catch(e => {
+                this.errors.push(e)
+              })
           }
         },
         data() {
@@ -156,7 +172,7 @@
             story: {
               title: null,
               summary: null,
-              content: null
+              content: "Write your story here..."
             },
             saveDialog: false,
             overlay: false,
@@ -165,11 +181,15 @@
             editorData: '<p>Content of the editor.</p>',
             editorConfig: {
                 // The configuration of the editor.
-            }     
+            },
+            images: [],
           }
         },
         mounted() {
           
+        },
+        watch: {
+
         }
     }
 </script>
